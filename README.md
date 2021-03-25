@@ -1,0 +1,1 @@
+# amplify-multi-tenant-react
