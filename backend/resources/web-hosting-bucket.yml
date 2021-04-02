@@ -1,0 +1,10 @@
+Resources:
+  WebHostingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.resources.WEB_HOSTING_BUCKET}
+
+Outputs:
+  WebHostingBucket:
+    Value:
+      Ref: WebHostingBucket

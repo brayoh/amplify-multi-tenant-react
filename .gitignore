@@ -1,0 +1,75 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+**/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+lib-cov
+
+# production
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# node-waf configuration
+.lock-wscript
+
+# Serverless directories
+.serverless
+backend/.dynamodb
+
+# Optional npm cache directory
+.npm
+
+# Env variables
+.env
+.env.*
+
+# Finder stuff
+!dist/index.html
+!dist/styles.css
+dist/
+
+# Editor stuff
+.vscode/
+.idea
+
+# no more amplify!
+amplify/
+build/
+dist/
+node_modules/
+aws-exports.*
+awsconfiguration.*
+aws-stack.*
+codegen.yml
+
+# cypress env file
+cypress.env.json
+
+
+# local dynamo
+.dynamodb/
+backend/.dynamodb/
+backend/.webpack/

@@ -1,0 +1,65 @@
+type ToDo {
+  id: ID
+  description: String!
+  completed: Boolean
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type User {
+  id: ID
+  cognitoId: ID!
+  firstName: String
+  lastName: String
+  email: AWSEmail
+  phoneNumber: AWSPhone
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+input ToDoCreateInput {
+  description: String!
+}
+
+input UserCreateInput {
+  cognitoId: ID!
+  firstName: String
+  lastName: String
+  email: AWSEmail!
+  phoneNumber: AWSPhone
+}
+
+input ToDoUpdateInput {
+  id: ID!
+  description: String
+  completed: Boolean
+}
+
+input UserUpdateInput {
+  id: ID!
+  firstName: String
+  lastName: String
+  email: AWSEmail
+  phoneNumber: AWSPhone
+}
+
+type Mutation {
+  createTodo(input: ToDoCreateInput): ToDo
+  createUser(input: UserCreateInput): User
+  updateTodo(input: ToDoUpdateInput): ToDo
+  updateUser(input: UserUpdateInput): User
+  deleteTodo(id: ID!): ToDo
+  deleteUser(id: ID!): User
+}
+
+type Query {
+  listToDos: [ToDo!]
+  listUsers: [User!]
+  getToDo(id: ID): ToDo
+  getUser(id: ID): User
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
