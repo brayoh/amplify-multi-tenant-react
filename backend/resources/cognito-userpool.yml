@@ -1,7 +1,6 @@
 Resources:
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
-    Description: "A Cognito user pool for authenticating users"
     Properties:
       AdminCreateUserConfig:
         AllowAdminCreateUserOnly: FALSE
@@ -26,7 +25,6 @@ Resources:
 
   CognitoUserPoolClient:
     Type: "AWS::Cognito::UserPoolClient"
-    Description: "App Client used by AWS AppSync"
     Properties:
       ClientName: ${self:service}-${self:provider.stage}-user-pool-client
       GenerateSecret: false

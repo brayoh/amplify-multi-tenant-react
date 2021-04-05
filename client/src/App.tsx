@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from "styled-components";
+import { Spin } from "antd";
+import { useQuery } from "@apollo/client";
+import { LoadingOutlined } from "@ant-design/icons";
 
-function App() {
+/** Presentational */
+import DataList from "./components/DataList";
+
+/** GraphQL Queries */
+import listToDos from "./graphql/queries/listToDos";
+
+/** App theme */
+import Colors from "./theme/colors";
+
+const BodyContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  background-color: ${Colors.grey};
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+`;
+
+const CenterContent = styled.div`
+  display: flex;
+  flex: 1;
+`;
+
+const App: React.FC = () => {
+  const { loading, error, data } = useQuery(listToDos);
+  const Loader = <LoadingOutlined style={{ fontSize: 50 }} spin />;
+
+  if (loading)
+    return (
+      <CenterContent>
+        <Spin indicator={Loader} />
+      </CenterContent>
+    );
+
+  if (error) return (<div>{`Error! ${error.message}`}</div>);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BodyContainer>
+      <div style={{ backgroundColor: "white" }}>
+        <DataList data={data.listToDos} />
+      </div>
+    </BodyContainer>
   );
-}
+};
 
 export default App;

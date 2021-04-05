@@ -1,12 +1,32 @@
-service: amplify-multi-tenant
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
 
+service: react-amplify-multi-tenant
+# app and org for use with dashboard.serverless.com
+app: amplify-multi-tenant
+org: brayoh
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
 frameworkVersion: "2"
 
 provider:
   name: aws
   runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
   region: eu-west-1
-  stage: ${opt:stage, env:stage, 'dev'}
+  stage: ${opt:stage,'dev'}
+  environment: ${file(env.yml)}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -38,10 +58,13 @@ provider:
 plugins:
   - serverless-appsync-plugin
   - serverless-stack-output
+  - serverless-pseudo-parameters
+  - serverless-offline
 
 custom:
   resources:
     PRIMARY_TABLE: ${self:service}-dynamo-table-${self:provider.stage}
+    PRIMARY_BUCKET: ${self:service}-primary-bucket-${self:provider.stage}
     WEB_HOSTING_BUCKET: ${self:service}-web-hosting-bucket-${self:provider.stage}
 
   output:
@@ -58,6 +81,14 @@ custom:
         config:
           tableName: ${self:custom.resources.PRIMARY_TABLE}
           serviceRoleArn: { Fn::GetAtt: [AppSyncDynamoDBServiceRole, Arn] }
+
+    userPoolConfig:
+      awsRegion: ${self:provider.region}
+      defaultAction: ALLOW
+      userPoolId: { Ref: CognitoUserPool } # name of the resource
+    logConfig:
+      loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
+      level: ALL
 
     mappingTemplates:
       - dataSource: PrimaryTable
@@ -111,6 +142,14 @@ custom:
         field: listUsers
         request: "list_users/request.vtl"
         response: "common-items-response.vtl"
+
+  functions:
+    cognitoPostConfirmation:
+      handler: src/handler.cognitoPostConfirmation
+      events:
+        - cognitoUserPool:
+            pool: CognitoUserPool
+            trigger: PostConfirmation
 
 resources:
   - ${file(./resources/appsync-dynamo-role.yml)}
