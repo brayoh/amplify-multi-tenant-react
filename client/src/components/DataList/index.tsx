@@ -1,11 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { List, Checkbox, Input, Button, Popconfirm, message } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useMutation, useQuery } from "@apollo/client";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { useMutation } from "@apollo/client";
+
+/** Presentational */
+import { CenterContent } from "../styled";
 
 /** App theme */
-import Colors from "../../theme/colors";
+import colors from "../../theme/colors";
+
+/** Custom types */
+import { ToDo } from "../../utils/custom-types";
 
 /** GraphQL Queries */
 import updateToDo from "../../graphql/mutations/updateToDo";
@@ -13,13 +20,10 @@ import createToDo from "../../graphql/mutations/createToDo";
 import deleteToDo from "../../graphql/mutations/deleteToDo";
 import listToDos from "../../graphql/queries/listToDos";
 
-/** Custom types */
-import { ToDo } from "../../utils/custom-types";
-
 const ListContainer = styled.div`
   max-height: 50vh;
   overflow: scroll;
-  background-color: ${Colors.white};
+  background-color: ${colors.white};
 `;
 
 const DeleteAction = styled.span`
@@ -29,13 +33,12 @@ const DeleteAction = styled.span`
   }
 `;
 
-const DataList = (props: { data: Array<ToDo> }) => {
+const DataList = () => {
   const [description, updateDescription] = React.useState("");
   const [updateToDoMutation] = useMutation(updateToDo);
   const [createToDoMutation] = useMutation(createToDo);
   const [deleteToDoMutation] = useMutation(deleteToDo);
-
-  const { data } = props;
+  const { loading, error, data } = useQuery(listToDos);
 
   function handleCheck(event: CheckboxChangeEvent, item: ToDo) {
     event.preventDefault();
@@ -60,7 +63,6 @@ const DataList = (props: { data: Array<ToDo> }) => {
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-
     createToDoMutation({
       variables: { input: { description } },
       refetchQueries: [
@@ -115,6 +117,18 @@ const DataList = (props: { data: Array<ToDo> }) => {
       });
   }
 
+  if (loading) {
+    return (
+      <CenterContent>
+        <LoadingOutlined style={{ fontSize: 50 }} spin />
+      </CenterContent>
+    );
+  }
+
+  if (error) {
+    return <div>{`Error! ${error.message}`}</div>;
+  }
+
   return (
     <ListContainer>
       <List
@@ -133,12 +147,14 @@ const DataList = (props: { data: Array<ToDo> }) => {
           </div>
         }
         bordered
-        dataSource={data}
+        dataSource={data.listToDos}
         renderItem={(item: ToDo) => (
           <List.Item>
             <Checkbox
               checked={item.completed}
-              onChange={(event:  CheckboxChangeEvent) => handleCheck(event, item)}
+              onChange={(event: CheckboxChangeEvent) =>
+                handleCheck(event, item)
+              }
             >
               {item.description}
             </Checkbox>

@@ -7,8 +7,17 @@ export default gql`
       createdAt
       description
       updatedAt
-
       completed
+      user {
+        id
+        cognitoId
+        createdAt
+        email
+        firstName
+        lastName
+        updatedAt
+        phoneNumber
+      }
     }
   }
 `;

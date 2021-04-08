@@ -5,7 +5,8 @@ $util.qr($ctx.args.input.put("updatedAt", $util.time.nowISO8601()))
     "operation" : "UpdateItem",
 
     "key" : {
-        "id" : { "S" : "${context.arguments.input.id}" }
+        "id" : { "S" : "${context.arguments.input.id}" },
+        "typeName": $util.dynamodb.toDynamoDBJson("USER")
     },
 
     ## Set up some space to keep track of things we're updating **

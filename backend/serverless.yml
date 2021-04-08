@@ -25,8 +25,9 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   region: eu-west-1
-  stage: ${opt:stage,'dev'}
-  environment: ${file(env.yml)}
+  stage: ${opt:stage, 'dev'}
+  environment:
+    PRIMARY_TABLE: ${self:custom.resources.PRIMARY_TABLE}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -59,9 +60,13 @@ plugins:
   - serverless-appsync-plugin
   - serverless-stack-output
   - serverless-pseudo-parameters
-  - serverless-offline
+  - serverless-webpack
 
 custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
   resources:
     PRIMARY_TABLE: ${self:service}-dynamo-table-${self:provider.stage}
     PRIMARY_BUCKET: ${self:service}-primary-bucket-${self:provider.stage}
@@ -73,7 +78,9 @@ custom:
 
   appSync: # appsync plugin configuration
     name: ${self:service}-appsync-${self:provider.stage}
-    authenticationType: API_KEY # since we don't have user login for now
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    additionalAuthenticationProviders:
+      - authenticationType: API_KEY
     dataSources:
       - type: AMAZON_DYNAMODB
         name: PrimaryTable
@@ -85,7 +92,7 @@ custom:
     userPoolConfig:
       awsRegion: ${self:provider.region}
       defaultAction: ALLOW
-      userPoolId: { Ref: CognitoUserPool } # name of the resource
+      userPoolId: { Ref: CognitoUserPoolToDoUserPool } # name of the resource
     logConfig:
       loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
       level: ALL
@@ -139,17 +146,31 @@ custom:
         response: "common-item-response.vtl"
       - dataSource: PrimaryTable
         type: Query
+        field: listUserTodos
+        request: "list_user_todos/request.vtl"
+        response: "common-items-response.vtl"
+      - dataSource: PrimaryTable
+        type: Query
         field: listUsers
         request: "list_users/request.vtl"
         response: "common-items-response.vtl"
-
-  functions:
-    cognitoPostConfirmation:
-      handler: src/handler.cognitoPostConfirmation
-      events:
-        - cognitoUserPool:
-            pool: CognitoUserPool
-            trigger: PostConfirmation
+      - dataSource: PrimaryTable
+        type: ToDo
+        field: user
+        request: "get_todo_user/request.vtl"
+        response: "common-item-response.vtl"
+      - dataSource: PrimaryTable
+        type: Query
+        field: profile
+        request: "get_profile/request.vtl"
+        response: "get_profile/response.vtl"
+functions:
+  cognitoPostConfirmation:
+    handler: handler.cognitoPostConfirmation
+    events:
+      - cognitoUserPool:
+          pool: CognitoUserPoolToDoUserPool
+          trigger: PostConfirmation
 
 resources:
   - ${file(./resources/appsync-dynamo-role.yml)}

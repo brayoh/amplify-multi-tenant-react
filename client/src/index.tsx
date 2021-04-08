@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Amplify, { Auth } from "aws-amplify";
 import { createAuthLink } from "aws-appsync-auth-link";
 import { createSubscriptionHandshakeLink } from "aws-appsync-subscription-link";
 import { AUTH_TYPE } from "aws-appsync";
@@ -12,24 +13,39 @@ import {
 
 /** Ant design */
 import "antd/dist/antd.css";
+import { GlobalStyles } from "./global";
 
 /** App entry */
 import App from "./App";
 
 /** AWS config */
-import { GraphQlApiUrl, GraphQlApiKeyDefault } from "./aws-exports.json";
+import {
+  UserPoolClientId,
+  UserPoolId,
+  GraphQlApiUrl,
+} from "./aws-exports.json";
 
 /** React reporting */
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from "./reportWebVitals";
 
 const config: any = {
   url: GraphQlApiUrl,
   region: process.env.REACT_APP_REGION,
   auth: {
-    type: AUTH_TYPE.API_KEY,
-    apiKey: GraphQlApiKeyDefault,
+    type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
+    apiKey: UserPoolId,
+    jwtToken: async () =>
+      (await Auth.currentSession()).getIdToken().getJwtToken(),
   },
 };
+
+Amplify.configure({
+  Auth: {
+    region: `${process.env.REACT_APP_REGION}`,
+    userPoolId: UserPoolId,
+    userPoolWebClientId: UserPoolClientId,
+  },
+});
 
 const client = new ApolloClient({
   link: ApolloLink.from([
@@ -46,6 +62,7 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
+    <GlobalStyles />
     <App />
   </ApolloProvider>,
   document.getElementById("root")

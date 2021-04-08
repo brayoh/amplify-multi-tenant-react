@@ -5,7 +5,8 @@ $util.qr($ctx.args.input.put("updatedAt", $util.time.nowISO8601()))
   "operation" : "PutItem",
   "key" : {
     "id": $util.dynamodb.toDynamoDBJson($util.autoId()),
-    "typeName": $util.dynamodb.toDynamoDBJson("TODO")
+    "typeName": $util.dynamodb.toDynamoDBJson("TODO"),
+    "user" : { "S" : "${context.identity.sub}" }
   },
   "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args.input)
 }

@@ -4,6 +4,7 @@ type ToDo {
   completed: Boolean
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
+  user: User
 }
 
 type User {
@@ -25,7 +26,7 @@ input UserCreateInput {
   cognitoId: ID!
   firstName: String
   lastName: String
-  email: AWSEmail!
+  email: AWSEmail
   phoneNumber: AWSPhone
 }
 
@@ -54,9 +55,11 @@ type Mutation {
 
 type Query {
   listToDos: [ToDo!]
+  listUserTodos(id: ID): [ToDo!]
   listUsers: [User!]
   getToDo(id: ID): ToDo
   getUser(id: ID): User
+  profile: User!
 }
 
 schema {

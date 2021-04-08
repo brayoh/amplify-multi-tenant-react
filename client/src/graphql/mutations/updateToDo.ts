@@ -5,10 +5,19 @@ export default gql`
     updateTodo(input: $input) {
       id
       createdAt
-      description
       updatedAt
-
+      description
       completed
+      user {
+        id
+        cognitoId
+        createdAt
+        email
+        firstName
+        lastName
+        updatedAt
+        phoneNumber
+      }
     }
   }
 `;

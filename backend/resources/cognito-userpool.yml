@@ -1,5 +1,5 @@
 Resources:
-  CognitoUserPool:
+  CognitoUserPoolToDoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
       AdminCreateUserConfig:
@@ -29,12 +29,12 @@ Resources:
       ClientName: ${self:service}-${self:provider.stage}-user-pool-client
       GenerateSecret: false
       UserPoolId:
-        Ref: CognitoUserPool
+        Ref: CognitoUserPoolToDoUserPool
 
 Outputs:
   UserPoolId:
     Value:
-      Ref: CognitoUserPool
+      Ref: CognitoUserPoolToDoUserPool
 
   UserPoolClientId:
     Value:

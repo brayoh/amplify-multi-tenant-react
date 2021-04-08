@@ -8,7 +8,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
+    "@types/node": "^14.14.37",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "antd": "^4.15.0",
@@ -23,6 +23,7 @@
     "jwt-decode": "^3.1.2",
     "password-validator": "^5.1.1",
     "react": "^17.0.2",
+    "react-apollo": "^3.1.5",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
@@ -30,12 +31,49 @@
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E  HUSKY_GIT_PARAMS",
+      "pre-commit": "NODE_ENV=production lint-staged",
+      "pre-push": "yarn tsc:validate"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.{js,jsx,tsx}": [
+        "pretty-quick --staged",
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "*.test.tsx"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case"
+        ]
+      ]
+    }
+  },
   "scripts": {
     "start": "yarn generate && react-scripts start",
     "generate": "graphql-codegen",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format-staged": "pretty-quick --staged",
+    "release": "standard-version",
+    "tsc:validate": "tsc --noEmit"
   },
   "eslintConfig": {
     "extends": [
@@ -56,22 +94,13 @@
     ]
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.1",
-    "@commitlint/config-conventional": "^12.1.1",
     "@graphql-codegen/cli": "^1.21.3",
     "@graphql-codegen/typescript": "^1.21.1",
     "@graphql-codegen/typescript-operations": "^1.17.15",
     "@graphql-codegen/typescript-react-apollo": "^2.2.3",
+    "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.9",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.23.1",
-    "graphql-codegen": "^0.4.0",
-    "husky": "^6.0.0",
-    "lint-staged": "^10.5.4",
-    "prettier": "^2.2.1",
-    "pretty-quick": "^3.1.0"
+    "@types/uuid": "^8.3.0",
+    "graphql-codegen": "^0.4.0"
   }
 }

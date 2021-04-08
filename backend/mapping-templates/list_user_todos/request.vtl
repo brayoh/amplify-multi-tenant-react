@@ -1,0 +1,22 @@
+{
+  "version" : "2017-02-28",
+  "operation" : "Query",
+  "query" : {
+    "expression": "#typeName = :typeName",
+    "expressionNames": {
+      "#typeName": "typeName"
+    },
+    "expressionValues" : {
+      ":typeName" : $util.dynamodb.toDynamoDBJson("TODO")
+    }
+  },
+  "filter": {
+    "expression": "#user = :user",
+    "expressionNames": {
+      "#user": "user"
+    },
+    "expressionValues": {
+      ":user" : { "S" : "${context.identity.sub}" }
+    }
+  },
+}

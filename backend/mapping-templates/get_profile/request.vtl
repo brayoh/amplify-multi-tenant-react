@@ -1,0 +1,23 @@
+
+{
+  "version" : "2017-02-28",
+  "operation" : "Query",
+  "query" : {
+    "expression": "#typeName = :typeName",
+    "expressionNames": {
+      "#typeName": "typeName"
+    },
+    "expressionValues" : {
+      ":typeName" : $util.dynamodb.toDynamoDBJson("USER")
+    }
+  },
+  "filter": {
+    "expression": "#cognitoId = :cognitoId",
+    "expressionNames": {
+      "#cognitoId": "cognitoId"
+    },
+    "expressionValues": {
+      ":cognitoId" : { "S" : "${context.identity.sub}" }
+    }
+  },
+}
