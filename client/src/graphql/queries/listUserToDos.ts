@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export default gql`
-  query ListUserTodos($id: ID) {
-    listUserTodos(id: $id) {
+  query ListUserTodos {
+    listUserTodos {
       id
       createdAt
       description

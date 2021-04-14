@@ -22,43 +22,21 @@ input ToDoCreateInput {
   description: String!
 }
 
-input UserCreateInput {
-  cognitoId: ID!
-  firstName: String
-  lastName: String
-  email: AWSEmail
-  phoneNumber: AWSPhone
-}
-
 input ToDoUpdateInput {
   id: ID!
   description: String
   completed: Boolean
 }
 
-input UserUpdateInput {
-  id: ID!
-  firstName: String
-  lastName: String
-  email: AWSEmail
-  phoneNumber: AWSPhone
-}
-
 type Mutation {
   createTodo(input: ToDoCreateInput): ToDo
-  createUser(input: UserCreateInput): User
   updateTodo(input: ToDoUpdateInput): ToDo
-  updateUser(input: UserUpdateInput): User
   deleteTodo(id: ID!): ToDo
-  deleteUser(id: ID!): User
 }
 
 type Query {
-  listToDos: [ToDo!]
-  listUserTodos(id: ID): [ToDo!]
-  listUsers: [User!]
+  listUserTodos: [ToDo!]
   getToDo(id: ID): ToDo
-  getUser(id: ID): User
   profile: User!
 }
 

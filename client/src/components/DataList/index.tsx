@@ -18,7 +18,7 @@ import { ToDo } from "../../utils/custom-types";
 import updateToDo from "../../graphql/mutations/updateToDo";
 import createToDo from "../../graphql/mutations/createToDo";
 import deleteToDo from "../../graphql/mutations/deleteToDo";
-import listToDos from "../../graphql/queries/listToDos";
+import listUserToDos from "../../graphql/queries/listUserToDos";
 
 const ListContainer = styled.div`
   max-height: 50vh;
@@ -38,7 +38,7 @@ const DataList = () => {
   const [updateToDoMutation] = useMutation(updateToDo);
   const [createToDoMutation] = useMutation(createToDo);
   const [deleteToDoMutation] = useMutation(deleteToDo);
-  const { loading, error, data } = useQuery(listToDos);
+  const { loading, error, data } = useQuery(listUserToDos);
 
   function handleCheck(event: CheckboxChangeEvent, item: ToDo) {
     event.preventDefault();
@@ -50,7 +50,7 @@ const DataList = () => {
       variables: { input: { completed, id: item.id } },
       refetchQueries: [
         {
-          query: listToDos,
+          query: listUserToDos,
         },
       ],
     })
@@ -67,7 +67,7 @@ const DataList = () => {
       variables: { input: { description } },
       refetchQueries: [
         {
-          query: listToDos,
+          query: listUserToDos,
         },
       ],
     })
@@ -85,7 +85,7 @@ const DataList = () => {
         variables: { input: { description } },
         refetchQueries: [
           {
-            query: listToDos,
+            query: listUserToDos,
           },
         ],
       })
@@ -104,7 +104,7 @@ const DataList = () => {
       variables: { id: item.id },
       refetchQueries: [
         {
-          query: listToDos,
+          query: listUserToDos,
         },
       ],
     })
@@ -129,6 +129,11 @@ const DataList = () => {
     return <div>{`Error! ${error.message}`}</div>;
   }
 
+  console.log(
+    "🚀 ~ file: index.tsx ~ line 42 ~ DataList ~ data",
+    data.listUserTodos
+  );
+
   return (
     <ListContainer>
       <List
@@ -147,7 +152,7 @@ const DataList = () => {
           </div>
         }
         bordered
-        dataSource={data.listToDos}
+        dataSource={data.listUserToDos}
         renderItem={(item: ToDo) => (
           <List.Item>
             <Checkbox

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { Button, Form, notification, Input, Col } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Auth } from 'aws-amplify';
+import * as React from "react";
+import { Redirect, RouteComponentProps } from "react-router-dom";
+import { Button, Form, notification, Input, Col } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Auth } from "aws-amplify";
 
 /** Presentational */
-import FullWidthWrapper from '../../components/styled/FullWidthWrapper';
-import EmailConfirmFormWrapper from '../../components/styled/EmailConfirmFormWrapper';
+import FullWidthWrapper from "../../components/styled/FullWidthWrapper";
+import EmailConfirmFormWrapper from "../../components/styled/EmailConfirmFormWrapper";
 
 type State = {
   username: string;
@@ -16,19 +16,22 @@ type State = {
   error: string;
 };
 
-class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> {
+class ConfirmEmailContainer extends React.Component<
+  RouteComponentProps,
+  State
+> {
   state = {
-    username: '',
+    username: "",
     loading: false,
     redirect: false,
-    confirmationCode: '',
-    error: ''
+    confirmationCode: "",
+    error: "",
   };
 
   componentDidMount() {
     if (this.props.location.search) {
       // get username from url params
-      let username = this.props.location.search.split('=')[1];
+      let username = this.props.location.search.split("=")[1];
 
       this.setState({ username });
     }
@@ -44,12 +47,16 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
 
     Auth.confirmSignUp(this.state.username, confirmationCode)
       .then(() => {
-        this.handleOpenNotification('success', 'Succesfully confirmed!', 'You will be redirected to login in a few!');
+        this.handleOpenNotification(
+          "success",
+          "Successfully confirmed!",
+          "You will be redirected to login in a few!"
+        );
       })
-      .catch(err => {
-        this.handleOpenNotification('error', 'Invalid code', err.message);
+      .catch((err) => {
+        this.handleOpenNotification("error", "Invalid code", err.message);
         this.setState({
-          loading: false
+          loading: false,
         });
       });
   };
@@ -61,26 +68,30 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
    *
    * @returns {void} - no value returned
    */
-  handleOpenNotification = (type: string, title: string, message: string): void => {
+  handleOpenNotification = (
+    type: string,
+    title: string,
+    message: string
+  ): void => {
     switch (type) {
-      case 'success':
-        notification['success']({
+      case "success":
+        notification["success"]({
           message: title,
           description: message,
-          placement: 'topRight',
+          placement: "topRight",
           duration: 1.5,
           onClose: () => {
             this.setState({ redirect: true });
-          }
+          },
         });
         break;
 
-      case 'error':
-        notification['error']({
+      case "error":
+        notification["error"]({
           message: title,
           description: message,
-          placement: 'topRight',
-          duration: 1.5
+          placement: "topRight",
+          duration: 1.5,
         });
         break;
     }
@@ -89,13 +100,13 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
   handleOnPaste = (event: React.ClipboardEvent) => {
     event.preventDefault();
 
-    let code = event.clipboardData.getData('Text').trim();
+    let code = event.clipboardData.getData("Text").trim();
 
     /** Update input */
     this.setState({ confirmationCode: code });
 
     // regex to check if string is numbers only
-    const reg = new RegExp('^[0-9]+$');
+    const reg = new RegExp("^[0-9]+$");
 
     if (reg.test(code) && code.length === 6) {
       // code is a valid number
@@ -104,12 +115,16 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
 
       Auth.confirmSignUp(this.state.username, code)
         .then(() => {
-          this.handleOpenNotification('success', 'Succesfully confirmed!', 'You will be redirected to login in a few!');
+          this.handleOpenNotification(
+            "success",
+            "Successfully confirmed!",
+            "You will be redirected to login in a few!"
+          );
         })
-        .catch(err => {
-          this.handleOpenNotification('error', 'Invalid code', err.message);
+        .catch((err) => {
+          this.handleOpenNotification("error", "Invalid code", err.message);
           this.setState({
-            loading: false
+            loading: false,
           });
         });
     }
@@ -124,13 +139,17 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
 
     return (
       <FullWidthWrapper align="center">
-        <EmailConfirmFormWrapper >
+        <EmailConfirmFormWrapper>
           <Col md={24} lg={18}>
             <div className="full-width">
               <h2>Check your email</h2>
               <p>We've sent a six­ digit confirmation code</p>
             </div>
-            <Form.Item validateStatus={error && 'error'} help={error} label="Confirmation Code">
+            <Form.Item
+              validateStatus={error && "error"}
+              help={error}
+              label="Confirmation Code"
+            >
               <Input
                 size="large"
                 type="number"
@@ -142,12 +161,18 @@ class ConfirmEmailContainer extends React.Component<RouteComponentProps, State> 
             </Form.Item>
           </Col>
           <Col md={24} lg={12}>
-            <Button type="primary" disabled={loading} htmlType="submit" size="large" onSubmit={this.handleSubmit}>
-              {loading ? <LoadingOutlined spin /> : 'Confirm Email'}
+            <Button
+              type="primary"
+              disabled={loading}
+              htmlType="submit"
+              size="large"
+              onSubmit={this.handleSubmit}
+            >
+              {loading ? <LoadingOutlined spin /> : "Confirm Email"}
             </Button>
           </Col>
         </EmailConfirmFormWrapper>
-        {redirect && <Redirect to={{ pathname: '/login' }} />}
+        {redirect && <Redirect to={{ pathname: "/login" }} />}
       </FullWidthWrapper>
     );
   }
