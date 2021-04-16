@@ -1,11 +1,7 @@
-import styled from "styled-components";
-import AppRouter from './navigation/Routes';
-
+import AppRouter from "./navigation/Routes";
 
 const App: React.FC = () => {
-  return (
-    <AppRouter />
-  );
+  return <AppRouter />;
 };
 
 export default App;

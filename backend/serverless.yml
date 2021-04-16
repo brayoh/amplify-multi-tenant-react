@@ -103,11 +103,6 @@ custom:
         response: "common-item-response.vtl"
       - dataSource: PrimaryTable
         type: Query
-        field: getUser
-        request: "get_user/request.vtl"
-        response: "common-item-response.vtl"
-      - dataSource: PrimaryTable
-        type: Query
         field: listUserTodos
         request: "list_user_todos/request.vtl"
         response: "common-items-response.vtl"
@@ -117,17 +112,39 @@ custom:
         request: "get_todo_user/request.vtl"
         response: "common-item-response.vtl"
       - dataSource: PrimaryTable
+        type: Mutation
+        field: createUser
+        request: "create_user/request.vtl"
+        response: "common-item-response.vtl"
+      - dataSource: PrimaryTable
+        type: Mutation
+        field: updateUser
+        request: "update_user/request.vtl"
+        response: "common-item-response.vtl"
+      - dataSource: PrimaryTable
+        type: Mutation
+        field: deleteUser
+        request: "delete_user/request.vtl"
+        response: "common-item-response.vtl"
+      - dataSource: PrimaryTable
         type: Query
         field: profile
         request: "get_profile/request.vtl"
         response: "get_profile/response.vtl"
+      - dataSource: PrimaryTable
+        type: Query
+        field: listUsers
+        request: "list_users/request.vtl"
+        response: "common-items-response.vtl"
+
 functions:
   cognitoPostConfirmation:
     handler: handler.cognitoPostConfirmation
     events:
       - cognitoUserPool:
-          pool: CognitoUserPoolToDoUserPool
+          pool: ${self:service}-${self:provider.stage}-user-pool
           trigger: PostConfirmation
+          existing: true
 
 resources:
   - ${file(./resources/appsync-dynamo-role.yml)}

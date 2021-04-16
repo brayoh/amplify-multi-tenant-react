@@ -129,11 +129,6 @@ const DataList = () => {
     return <div>{`Error! ${error.message}`}</div>;
   }
 
-  console.log(
-    "🚀 ~ file: index.tsx ~ line 42 ~ DataList ~ data",
-    data.listUserTodos
-  );
-
   return (
     <ListContainer>
       <List
@@ -152,7 +147,7 @@ const DataList = () => {
           </div>
         }
         bordered
-        dataSource={data.listUserToDos}
+        dataSource={data.listUserTodos}
         renderItem={(item: ToDo) => (
           <List.Item>
             <Checkbox

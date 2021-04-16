@@ -1,5 +1,4 @@
 import * as moment from "moment";
-import { v4 as uuidv4 } from "uuid";
 import { DynamoDB } from "aws-sdk";
 
 const ddb = new DynamoDB({ apiVersion: "2012-10-08" });
@@ -16,7 +15,7 @@ export const cognitoPostConfirmation = async (event, context, callback) => {
           S: moment().format("YYYY-MM-DDThh:mm:ssZ"),
         },
         typeName: { S: "USER" },
-        id: { S: uuidv4() },
+        id: { S: event.request.userAttributes.sub },
         cognitoId: { S: event.request.userAttributes.sub },
         email: { S: event.request.userAttributes.email },
         phoneNumber: { S: event.request.userAttributes.phone_number },
